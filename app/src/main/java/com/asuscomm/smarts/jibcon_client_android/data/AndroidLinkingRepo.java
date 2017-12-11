@@ -1,8 +1,10 @@
-package com.asuscomm.smarts.jibcon_client_android;
+package com.asuscomm.smarts.jibcon_client_android.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.asuscomm.smarts.jibcon_client_android.utils.Consts;
 
 import java.lang.ref.WeakReference;
 

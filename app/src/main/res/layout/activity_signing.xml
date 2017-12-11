@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.asuscomm.smarts.jibcon_client_android.SigningActivity"
+    tools:context="com.asuscomm.smarts.jibcon_client_android.ui.SigningActivity"
     >
 
     <Button

@@ -1,4 +1,4 @@
-package com.asuscomm.smarts.jibcon_client_android;
+package com.asuscomm.smarts.jibcon_client_android.services;
 
 import android.app.Service;
 import android.content.Intent;

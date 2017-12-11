@@ -1,4 +1,4 @@
-package com.asuscomm.smarts.jibcon_client_android;
+package com.asuscomm.smarts.jibcon_client_android.utils;
 
 /**
  * Created by jaeyoung on 09/12/2017.
