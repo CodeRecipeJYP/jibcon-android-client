@@ -19,6 +19,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        permissionCheckNCreateProductInstance();
+    }
+
+    private void permissionCheckNCreateProductInstance() {
+        Log.d(TAG, "permissionCheckNCreateProductInstance: ");
+
         if (!AndroidLinkingRepo.getInstance(this).isLinked()) {
             RxPermissions rxPermissions = new RxPermissions(this);
 

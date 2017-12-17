@@ -8,11 +8,18 @@ import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.asuscomm.smarts.jibcon_client_android.data.domains.ProductInstance;
+import com.asuscomm.smarts.jibcon_client_android.data.network.ProductInstanceService;
+import com.asuscomm.smarts.jibcon_client_android.utils.retrofit.RetrofitClients;
 import com.asuscomm.smarts.jibcon_client_android.utils.rxjava.Ignore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.UUID;
 
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.SingleSubject;
 
 /**
@@ -78,7 +85,42 @@ public class ProductInstanceRepo {
         devicesUUID.subscribe(
                 (uuid) -> {
                     Log.d(TAG, "create: UUID=" + uuid);
+
+                    getTokenNCreate(uuid);
                 }
         );
+    }
+
+    private void getTokenNCreate(final String uuid) {
+        Log.d(TAG, "getTokenNCreate: ");
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mUser != null) {
+            mUser.getIdToken(true)
+                    .addOnCompleteListener((task) -> {
+                        if (task.isSuccessful()) {
+                            String idToken = task.getResult().getToken();
+                            createWithUuidNToken(idToken, uuid);
+                        }
+                    });
+        } else {
+            Log.e(TAG, "getTokenNCreate: mUser is null");
+        }
+    }
+
+    private void createWithUuidNToken(String idToken, String uuid) {
+        Log.d(TAG, "createWithUuidNToken() called with: idToken = [" + idToken + "], uuid = [" + uuid + "]");
+
+        ProductInstanceService service = RetrofitClients.getInstance().getService(ProductInstanceService.class);
+        service.post(idToken, new ProductInstance(uuid))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        (productInstance) -> {
+                            Log.d(TAG, "createWithUuidNToken: productInstance = [" + productInstance.toString() + "]");
+                        },
+                        (throwable) -> {
+                            Log.d(TAG, "createWithUuidNToken: onError throwable=" + throwable);
+                        }
+                );
     }
 }
