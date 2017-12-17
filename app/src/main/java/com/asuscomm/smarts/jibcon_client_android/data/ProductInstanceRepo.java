@@ -3,6 +3,7 @@ package com.asuscomm.smarts.jibcon_client_android.data;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -46,7 +47,7 @@ public class ProductInstanceRepo {
                             final String tmDevice, tmSerial, androidId;
                             tmDevice = "" + (tm != null ? tm.getDeviceId() : null);
                             tmSerial = "" + (tm != null ? tm.getSimSerialNumber() : null);
-                            androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+                            androidId = "" + Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                             UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
                             String deviceId = deviceUuid.toString();
                             Log.d(TAG, String.format("getDevicesUUID: tmDevice=%s, tmSerial=%s, androidId=%s, Uuid=%s", tmDevice, tmSerial, androidId, deviceId));
