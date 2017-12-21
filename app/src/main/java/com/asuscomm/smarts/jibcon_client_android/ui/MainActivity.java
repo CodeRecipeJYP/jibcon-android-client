@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.asuscomm.smarts.jibcon_client_android.data.ProductInstanceRepo;
 import com.asuscomm.smarts.jibcon_client_android.R;
 import com.asuscomm.smarts.jibcon_client_android.data.AndroidLinkingRepo;
+import com.asuscomm.smarts.jibcon_client_android.utils.RingingUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import android.Manifest;
@@ -19,7 +20,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initView();
         permissionCheckNCreateProductInstance();
+    }
+
+    private void initView() {
+        findViewById(R.id.btn_ringing).setOnClickListener(
+                __ -> {
+                    RingingUtils.activate(this);
+                }
+        );
     }
 
     private void permissionCheckNCreateProductInstance() {

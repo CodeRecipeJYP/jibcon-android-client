@@ -10,13 +10,14 @@ import java.util.HashMap;
  */
 
 public class UrlUtils {
+    private static final String INTERNAL_IP = "192.168.50.116";
     private static HashMap<Class, String> urls;
 
     static {
         urls = new HashMap<>();
 
         String apiUrl = BuildConfig.DEBUG ?
-                "http://192.168.0.25:3000/" :
+                String.format("http://%s:3000/", INTERNAL_IP) :
                 "http://52.79.142.130/";
 
         urls.put(ProductInstanceService.class, apiUrl);

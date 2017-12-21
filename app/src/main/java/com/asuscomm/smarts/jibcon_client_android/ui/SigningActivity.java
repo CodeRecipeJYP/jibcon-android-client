@@ -33,8 +33,9 @@ public class SigningActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: ");
 
-        startAuthUI();
         tvToken = findViewById(R.id.tv_token);
+
+        startAuthUI();
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +59,11 @@ public class SigningActivity extends AppCompatActivity {
     private void onSigninSuccess() {
         Log.d(TAG, "onSigninSuccess: ");
 
+        // Successfully signed in
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d(TAG, "onSigninSuccess: user=" + user);
+        tvToken.setText(MyFirebaseInstanceIDService.getToken());
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
@@ -65,20 +71,26 @@ public class SigningActivity extends AppCompatActivity {
     private void startAuthUI() {
         Log.d(TAG, "startAuthUI: ");
 
-        // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && !currentUser.isAnonymous()) {
+            Log.d(TAG, "startAuthUI: already signed in, uid=" + currentUser.getUid());
+            onSigninSuccess();
+        } else {
+            // Choose authentication providers
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
 //                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
-
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
+                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
+            onSigninSuccess();
+            // Create and launch sign-in intent
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN);
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -88,10 +100,6 @@ public class SigningActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == ResultCodes.OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Log.d(TAG, "onActivityResult: user=" + user);
-                tvToken.setText(MyFirebaseInstanceIDService.getToken());
                 onSigninSuccess();
             } else {
                 // Sign in failed, check response for error code
