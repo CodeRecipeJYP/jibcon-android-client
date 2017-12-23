@@ -5,12 +5,13 @@ package com.asuscomm.smarts.jibcon_client_android.data.domains;
  */
 
 public class ProductInstance {
-    public String name;
+    public String uuid;
+    public String fcmToken;
 
-    public ProductInstance() {
+    public ProductInstance(String uuid, String fcmToken) {
+        this.uuid = uuid;
+        this.fcmToken = fcmToken;
     }
-
-    public ProductInstance(String name) {
-        this.name = name;
+    public ProductInstance() {
     }
 }

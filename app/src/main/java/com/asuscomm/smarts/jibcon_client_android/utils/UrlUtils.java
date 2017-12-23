@@ -10,7 +10,9 @@ import java.util.HashMap;
  */
 
 public class UrlUtils {
-    private static final String INTERNAL_IP = "192.168.50.116";
+//    private static final String INTERNAL_IP = "192.168.114.38";
+//    private static final String INTERNAL_IP = "192.168.50.116";
+    private static final String INTERNAL_IP = "10.0.2.2";
     private static HashMap<Class, String> urls;
 
     static {

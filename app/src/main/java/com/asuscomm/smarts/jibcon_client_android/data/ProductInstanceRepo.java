@@ -15,6 +15,7 @@ import com.asuscomm.smarts.jibcon_client_android.utils.retrofit.RetrofitClients;
 import com.asuscomm.smarts.jibcon_client_android.utils.rxjava.Ignore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.UUID;
 
@@ -96,11 +97,15 @@ public class ProductInstanceRepo {
         Log.d(TAG, "getTokenNCreate: ");
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mUser != null) {
+            Log.d(TAG, "getTokenNCreate: mUser.getIdToken");
             mUser.getIdToken(true)
                     .addOnCompleteListener((task) -> {
                         if (task.isSuccessful()) {
+                            Log.d(TAG, "getTokenNCreate: mUser.getIdToken successed");
                             String idToken = task.getResult().getToken();
                             createWithUuidNToken(idToken, uuid);
+                        } else {
+                            Log.d(TAG, "getTokenNCreate: mUser.getIdToken failed");
                         }
                     });
         } else {
@@ -110,9 +115,11 @@ public class ProductInstanceRepo {
 
     private void createWithUuidNToken(String idToken, String uuid) {
         Log.d(TAG, "createWithUuidNToken() called with: idToken = [" + idToken + "], uuid = [" + uuid + "]");
+        String fcmToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "createWithUuidNToken: fcmToken=" + fcmToken);
 
         ProductInstanceService service = RetrofitClients.getInstance().getService(ProductInstanceService.class);
-        service.post(idToken, new ProductInstance(uuid))
+        service.post(idToken, new ProductInstance(uuid, fcmToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
